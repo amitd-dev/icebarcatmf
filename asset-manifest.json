@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/icebarcatmf/static/css/main.e05332b6.css",
+    "main.js": "/icebarcatmf/static/js/main.099939a2.js",
+    "static/media/bootstrap-icons.woff?": "/icebarcatmf/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
+    "static/media/bootstrap-icons.woff2?": "/icebarcatmf/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
+    "static/media/logo.png": "/icebarcatmf/static/media/logo.8ae6b3743514301198ed.png",
+    "static/media/404.svg": "/icebarcatmf/static/media/404.59d1f9fdba8996c7b96966e44ec51e9a.svg",
+    "static/media/adminlogin.svg": "/icebarcatmf/static/media/adminlogin.496e11218ddf3751c8ab31379589c4bb.svg",
+    "static/media/gc-credited.svg": "/icebarcatmf/static/media/gc-credited.57410ca5a3fb36b8293a9f1a8cdba94a.svg",
+    "static/media/pdfimage.png": "/icebarcatmf/static/media/pdfimage.6466eb5cc0ece86c5d8b.png",
+    "static/media/total-spins.svg": "/icebarcatmf/static/media/total-spins.6a1ffd8afce74c083509a8e23960ccdd.svg",
+    "static/media/total-seed-amount.svg": "/icebarcatmf/static/media/total-seed-amount.ffaacaa2931d05dd745506cb4731775b.svg",
+    "static/media/net-revenue.svg": "/icebarcatmf/static/media/net-revenue.5ca82ef54ea54fb6a3c4947c9cb9aa73.svg",
+    "index.html": "/icebarcatmf/index.html",
+    "static/media/master-wallet.svg": "/icebarcatmf/static/media/master-wallet.a089d8dbb9aab6d2368005e312866e9e.svg",
+    "static/media/total-ggr-sc.svg": "/icebarcatmf/static/media/total-ggr-sc.db5980db83e3bb213498cdb6ee5a8d6a.svg",
+    "static/media/max-revenue.svg": "/icebarcatmf/static/media/max-revenue.62268438cb2a3bb4a33f97483bdeabac.svg",
+    "static/media/min-revenue.svg": "/icebarcatmf/static/media/min-revenue.c9f52b7216302cc09ce510a1c9fcfa84.svg",
+    "static/media/hourly-earning.svg": "/icebarcatmf/static/media/hourly-earning.28e93429b2fb8224d9e923f0463fb3c0.svg",
+    "static/media/digit-down.svg": "/icebarcatmf/static/media/digit-down.8d0743edd86d8c44e69bb9dd17a0fd73.svg",
+    "static/media/digit-neutral.svg": "/icebarcatmf/static/media/digit-neutral.29a3940baee5d7261880dfd9f901c137.svg",
+    "static/media/digit-up.svg": "/icebarcatmf/static/media/digit-up.2b0dab837d933e4a5348c3fccc39692b.svg",
+    "static/media/cross.svg": "/icebarcatmf/static/media/cross.c46dcd411951f70947676986b2c5c648.svg",
+    "static/media/menu-hamburger.svg": "/icebarcatmf/static/media/menu-hamburger.e9aa1b8e41492c3e7fa449fb57817633.svg",
+    "main.e05332b6.css.map": "/icebarcatmf/static/css/main.e05332b6.css.map",
+    "main.099939a2.js.map": "/icebarcatmf/static/js/main.099939a2.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e05332b6.css",
+    "static/js/main.099939a2.js"
+  ]
+}

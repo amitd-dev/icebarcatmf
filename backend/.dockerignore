@@ -1,0 +1,8 @@
+#
+# Ignore these directories & files from docker context so that these are not copied from host to the container image.
+#
+./dist/
+./node_modules/
+./Dockerfile
+./package-lock.json
+./env

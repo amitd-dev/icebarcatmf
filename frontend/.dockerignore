@@ -1,0 +1,8 @@
+#
+# Ignore these directories & files from docker context so that these are not copied from host to the container image.
+#
+build/
+node_modules/
+yarn-error.log
+yarn.lock
+Dockerfile
