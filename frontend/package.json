@@ -1,5 +1,6 @@
 {
   "name": "@moneyfactory/gaming",
+  "homepage": "https://amitd-dev.github.io/icebarcatmf",
   "author": "moneyfactory",
   "keywords": [
     "bootstrap 5",
@@ -106,7 +107,9 @@
     "lint": "eslint src --config eslint.config.js",
     "lint:fix": "eslint src --config eslint.config.js --fix",
     "lint:file": "eslint --config eslint.config.js --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
@@ -131,6 +134,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-unused-imports": "^4.1.4",
+    "gh-pages": "^6.3.0",
     "globals": "^13.24.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2"
