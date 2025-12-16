@@ -42,7 +42,7 @@ root.render(
       }
     }}
     />
-    <BrowserRouter>
+    <BrowserRouter basename="/icebarcatmf">
        <MainRoute />
     </BrowserRouter>
     <ReactQueryDevtools initialIsOpen={false} position={'bottom-right'} />
