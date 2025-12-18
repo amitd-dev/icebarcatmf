@@ -1,4 +1,3 @@
-import { Card } from "@themesberg/react-bootstrap";
 import React from "react";
 import RouteWithSidebar from "../RouteWithSidebar";
 import usePrivateRoute from "./usePrivateRoute";
@@ -26,7 +25,7 @@ const PrivateRoute = ({ isWithoutCard = false, children, module }) => {
       module[Object.keys(module)?.[0]]
     ) ? (
       <RouteWithSidebar key={children}>
-        {isWithoutCard ? children : <div className="p-3 ">{children}</div>}
+        {isWithoutCard ? children : <div className="app-page app-page--surface">{children}</div>}
       </RouteWithSidebar>
     ) : (
       <Navigate replace to={AdminRoutes.Profile} />

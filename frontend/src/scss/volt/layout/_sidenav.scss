@@ -4,20 +4,125 @@
 .sidebar {
   display: block;
   position: fixed;
-  top: 0;
+  // Sit below the fixed top navbar
+  top: 60px;
   bottom: 0;
   left: 0;
   z-index: 100;
-  max-height: 100%;
+  max-height: calc(100vh - 60px);
   // overflow-y: auto;
   width: 100%;
-  margin-top: 50px;
+  margin-top: 0;
   @include transition(max-width 0.3s);
+
+  // Modern glass + dark gradient (match navbar)
+  background: rgba(18, 18, 18, 0.72);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 10px 0 36px rgba(0, 0, 0, 0.42);
+
+  // Subtle accent edge
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 229, 160, 0) 0%,
+      rgba(0, 229, 160, 0.35) 40%,
+      rgba(0, 229, 160, 0) 100%
+    );
+    pointer-events: none;
+  }
+
+  // -----------------------------
+  // Scroll effects (SimpleBar)
+  // -----------------------------
+  .simplebar-content-wrapper {
+    position: relative;
+    scroll-behavior: smooth;
+
+    // Top/bottom fade to hint scrollability (always subtle)
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 18px;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+
+    &::before {
+      top: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.0) 100%);
+    }
+
+    &::after {
+      bottom: 0;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.0) 100%);
+    }
+
+    // Dynamic fades (set by JS class toggles)
+    &.sb-is-scrolled::before {
+      opacity: 1;
+    }
+    &:not(.sb-at-bottom)::after {
+      opacity: 1;
+    }
+
+    // "Ambush" pulse while scrolling
+    &.sb-is-scrolling::before,
+    &.sb-is-scrolling::after {
+      opacity: 1;
+    }
+  }
+
+  .simplebar-track.simplebar-vertical {
+    width: 12px;
+    right: 2px;
+    background: transparent;
+    // Hide scrollbar until user interacts with the sidebar (hover/focus/scroll).
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+
+  &:hover .simplebar-track.simplebar-vertical,
+  &:focus-within .simplebar-track.simplebar-vertical {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .simplebar-scrollbar:before {
+    background: linear-gradient(180deg, rgba(0, 229, 160, 0.65) 0%, rgba(0, 217, 148, 0.45) 100%);
+    border-radius: 10px;
+    opacity: 1;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 10px 24px rgba(0, 0, 0, 0.45);
+    transition: box-shadow 160ms ease, filter 160ms ease;
+  }
+
+  // Ensure it becomes visible while actively scrolling, even without hover (e.g., trackpads/touch).
+  .simplebar-content-wrapper.sb-is-scrolling ~ .simplebar-track.simplebar-vertical {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .simplebar-content-wrapper.sb-is-scrolling ~ .simplebar-track .simplebar-scrollbar:before {
+    filter: saturate(1.2);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.22), 0 14px 34px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 229, 160, 0.20);
+  }
 
   @include media-breakpoint-up(md) {
     width: 100%;
     max-width: 274px;
-    margin-top: 0;
   }
 
   .nav {
@@ -172,6 +277,25 @@
 .sidebar-inner {
   position: relative;
   overflow-y: hidden;
+  // subtle inner shading so content feels layered
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.00) 40%,
+      rgba(0, 0, 0, 0.20) 100%
+    );
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
   .accordion-button {
     &::after {
       background-image: none;
@@ -237,9 +361,10 @@
   @include media-breakpoint-up(md) {
     margin-left: 120px;
   }
+  // Navbar is full-width now (it should not shift when sidebar collapses)
   .app-navbar {
-    left: 121px;
-    width: calc(100% - 121px);
+    left: 0;
+    width: 100%;
   }
 }
 

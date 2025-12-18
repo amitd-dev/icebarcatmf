@@ -525,7 +525,7 @@ $fontawesome-webfonts-path:   '../vendor/font-awesome/webfonts';
 $font-awesome-5:              'Font Awesome 5 Free';
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif:      'Nunito Sans', sans-serif;
+$font-family-sans-serif:      'Inter', 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
 // stylelint-enable value-keyword-case
 $font-family-base:            var(--bs-font-sans-serif);
 $font-family-code:            var(--bs-font-monospace);
@@ -561,7 +561,7 @@ $h5-font-size:                $font-size-base * 1.25;
 $h6-font-size:                $font-size-base;
 
 $headings-margin-bottom:      $spacer / 2;
-$headings-font-family:        null;
+$headings-font-family:        'Space Grotesk', 'Inter', 'Nunito Sans', sans-serif;
 $headings-font-style:         null;
 $headings-font-weight:        $font-weight-bold;
 $headings-line-height:        1.3;

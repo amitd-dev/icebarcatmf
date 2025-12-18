@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap');
 
 // Bootstrap mixins and functions
 @import "../../node_modules/bootstrap/scss/mixins";
@@ -44,5 +44,8 @@
 
 // Remove Scroll
 @import "remove-scroll";
+
+// Login modern inputs (scoped to login only)
+@import "login-modern";
 
 // write your custom styles here!
