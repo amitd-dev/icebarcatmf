@@ -27,6 +27,12 @@ import './config/i18n';
 import MainRoute from './pages/MainRoute'
 setupInterceptors()
 const root = ReactDOM.createRoot(document.getElementById('root'))
+
+// In local development we want routes to work at `/...` regardless of PUBLIC_URL/homepage.
+// PUBLIC_URL is mainly useful for production deployments under a subpath (e.g. GitHub Pages).
+const routerBaseName =
+  process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : '/'
+
 root.render(
   <QueryClientProvider client={queryClient}>
     <Toaster 
@@ -42,7 +48,7 @@ root.render(
       }
     }}
     />
-    <BrowserRouter basename="/icebarcatmf">
+    <BrowserRouter basename={routerBaseName}>
        <MainRoute />
     </BrowserRouter>
     <ReactQueryDevtools initialIsOpen={false} position={'bottom-right'} />

@@ -14,8 +14,8 @@ const RouteWithSidebar = ({ children }) => {
   return (
     <>
       <Sidebar open={open} collapseSidebar={collapseSidebar} setCollapseSidebar={setCollapseSidebar} />
-      <main className={!collapseSidebar ? 'content px-0' : 'content-collapsed px-0'}>
-        <Navbar open={open} setOpen={setOpen} />
+      <main className={`${!collapseSidebar ? 'content px-0' : 'content-collapsed px-0'} ${open ? 'is-menu-open' : ''}`}>
+        <Navbar open={open} setOpen={setOpen} collapseSidebar={collapseSidebar} setCollapseSidebar={setCollapseSidebar} />
         <div className='component-container'>
           {children}
         </div>

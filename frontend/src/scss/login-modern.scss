@@ -1,0 +1,131 @@
+// Login-only modern form controls (scoped to Admin/Affiliate login pages)
+// Goal: glassy, clean, responsive inputs without affecting the rest of the app.
+
+.casino-login-section {
+  // Brand header (logo + tagline)
+  .login-brand {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .login-brand__logo {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(0, 229, 160, 0.3));
+  }
+
+  .login-brand__tagline {
+    display: block;
+    margin: 0;
+    padding-right: 10px;
+    font-size: 14px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #00E5A0 0%, #00FFAA 50%, #00D994 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    filter: drop-shadow(0 0 10px rgba(0, 229, 160, 0.4));
+  }
+
+  // Unified input container
+  .input-group {
+    border-radius: 18px !important;
+    background: rgba(255, 255, 255, 0.045) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
+  }
+
+  // Error state (Formik applies `border border-danger` on the input-group)
+  .input-group.border-danger {
+    border-color: rgba(220, 53, 69, 0.9) !important;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.12), 0 12px 36px rgba(0, 0, 0, 0.38);
+  }
+
+  // Left/right icon blocks
+  .input-group-text {
+    background: transparent !important;
+    border: 0 !important;
+    color: rgba(0, 229, 160, 0.95) !important;
+    padding: 0.9rem 0.95rem !important;
+    min-width: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Actual input
+  .form-control {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: rgba(234, 250, 245, 0.96) !important;
+    padding: 0.95rem 1rem !important;
+    font-size: 1rem;
+    line-height: 1.25;
+    min-height: 56px;
+  }
+
+  .form-control::placeholder {
+    color: rgba(234, 250, 245, 0.42) !important;
+  }
+
+  // Focus ring for the whole control (not the internal pieces)
+  .input-group:focus-within {
+    border-color: rgba(0, 229, 160, 0.68) !important;
+    box-shadow: 0 0 0 4px rgba(0, 229, 160, 0.14), 0 14px 44px rgba(0, 0, 0, 0.44);
+  }
+
+  // Password toggle icon hover (right-side icon)
+  .input-group-text:last-child {
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+
+  .input-group-text:last-child:hover {
+    background: rgba(0, 229, 160, 0.09) !important;
+    color: rgba(0, 255, 170, 0.98) !important;
+  }
+
+  // Responsive tuning
+  @media (max-width: 480px) {
+    .login-brand {
+      align-items: center;
+      text-align: center;
+    }
+
+    .login-brand__tagline {
+      padding-right: 0;
+      font-size: 13px;
+    }
+
+    .input-group {
+      border-radius: 16px !important;
+    }
+
+    .input-group-text {
+      min-width: 50px;
+      padding: 0.8rem 0.85rem !important;
+    }
+
+    .form-control {
+      padding: 0.85rem 0.9rem !important;
+      min-height: 52px;
+    }
+  }
+}
+
+

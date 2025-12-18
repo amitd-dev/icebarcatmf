@@ -1,6 +1,5 @@
 {
   "name": "@moneyfactory/gaming",
-  "homepage": "https://amitd-dev.github.io/icebarcatmf",
   "author": "moneyfactory",
   "keywords": [
     "bootstrap 5",
@@ -98,7 +97,7 @@
     "zustand": "4.3.5"
   },
   "scripts": {
-    "start": "set PORT=8003 && react-scripts start",
+    "start": "REACT_APP_API_URL=http://localhost:8080 REACT_APP_SOCKET_URL=http://localhost:8080 PORT=8003 react-scripts start",
     "build": "react-scripts build",
     "build-local": "PUBLIC_URL=./ react-scripts build",
     "test": "react-scripts test",

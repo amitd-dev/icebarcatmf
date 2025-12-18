@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,6 +33,16 @@ const AdminSignIn = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    // Login page should never scroll; lock viewport only while this route is mounted.
+    document.documentElement.classList.add("login-no-scroll");
+    document.body.classList.add("login-no-scroll");
+    return () => {
+      document.documentElement.classList.remove("login-no-scroll");
+      document.body.classList.remove("login-no-scroll");
+    };
+  }, []);
+
   return (
     <main>
       <Helmet>
@@ -49,28 +59,13 @@ const AdminSignIn = () => {
             >
               <div className="card shadow-soft border p-4 p-lg-5 w-100 fmxw-500 fade-in">
                 <div className="text-center text-md-center mb-4 mt-md-0">
-                  <div className="mb-2" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <img 
-                      height={80} 
-                      width={400} 
-                      style={{ objectFit: "contain", filter: "drop-shadow(0 0 20px rgba(0, 229, 160, 0.3))" }}
-                      src={'/GammaSweep_Logo.png'}
+                  <div className="login-brand">
+                    <img
+                      src={`${process.env.PUBLIC_URL}/GammaSweep_Logo.png`}
                       alt="SWEEP"
-                      className="fade-in"
+                      className="fade-in login-brand__logo"
                     />
-                  </div>
-                  <div style={{ textAlign: "right", paddingRight: "10px", marginTop: "-20px" }}>
-                    <span style={{ 
-                      fontSize: "16px", 
-                      background: "linear-gradient(135deg, #00E5A0 0%, #00FFAA 50%, #00D994 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                      fontWeight: "600",
-                      letterSpacing: "0.5px",
-                      textTransform: "uppercase",
-                      filter: "drop-shadow(0 0 10px rgba(0, 229, 160, 0.4))"
-                    }}>
+                    <span className="login-brand__tagline">
                       ICE Barcelona 26 Edition
                     </span>
                   </div>

@@ -1,7 +1,7 @@
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Nav, Badge, Image, Button } from "@themesberg/react-bootstrap";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
@@ -21,6 +21,8 @@ const AffiliateSidebar = (props) => {
   const { pathname } = location;
   const [show, setShow] = useState(false);
   const showClass = show ? "show" : "";
+  const scrollBarRef = useRef(null);
+  const scrollEndTimerRef = useRef(null);
   const userDetails = useUserStore((state) => state.userDetails);
   // const permissions = useUserStore((state) => state.permissions)
   const navigate = useNavigate();
@@ -34,6 +36,34 @@ const AffiliateSidebar = (props) => {
   };
 
   const { mutate: logout } = useLogoutUser({ onSuccess: () => logoutUser() });
+
+  useEffect(() => {
+    const scrollEl = scrollBarRef.current?.getScrollElement?.();
+    if (!scrollEl) return;
+
+    const handleScroll = () => {
+      const atTop = scrollEl.scrollTop <= 2;
+      const atBottom =
+        scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 2;
+
+      scrollEl.classList.toggle("sb-at-top", atTop);
+      scrollEl.classList.toggle("sb-at-bottom", atBottom);
+      scrollEl.classList.toggle("sb-is-scrolled", !atTop);
+
+      scrollEl.classList.add("sb-is-scrolling");
+      if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
+      scrollEndTimerRef.current = setTimeout(() => {
+        scrollEl.classList.remove("sb-is-scrolling");
+      }, 140);
+    };
+
+    handleScroll();
+    scrollEl.addEventListener("scroll", handleScroll);
+    return () => {
+      scrollEl.removeEventListener("scroll", handleScroll);
+      if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
+    };
+  }, []);
 
   // const activeAccordianKey = (path, key) => {
   //   return pathname.includes(path) && key
@@ -171,6 +201,8 @@ const AffiliateSidebar = (props) => {
     <>
       <CSSTransition timeout={300} in={show} classNames="sidebar-transition">
         <SimpleBar
+          ref={scrollBarRef}
+          autoHide={false}
           className={`collapse ${showClass} ${
             props.open ? "d-block" : "d-md-block"
           } sidebar d-md-block bg-primary text-white`}
@@ -178,17 +210,20 @@ const AffiliateSidebar = (props) => {
           <div className="sidebar-inner px-4 pt-3">
             <Nav className="flex-column pt-3 pt-md-0">
               {userDetails ? (
-                <div className="d-flex justify-center">
-                  <img
-                    src={"/logoImage.png"}
-                    style={{ width: "50px", height: "50px" }}
-                  />
-                  <h5
-                    className="d-flex align-items-center m-2 mt-4"
-                    style={{ textTransform: "upperCase" }}
+                <div className="sidebar-brand">
+                  <div className="sidebar-brand__top">
+                    <img
+                      src={"/logoImage.png"}
+                      className="sidebar-brand__logo"
+                      alt="Affiliate"
+                    />
+                  </div>
+                  <div
+                    className="sidebar-brand__name"
+                    title={`${userDetails?.firstName || ""} ${userDetails?.lastName || ""}`.trim()}
                   >
                     {`${userDetails?.firstName} ${userDetails?.lastName}`}
-                  </h5>
+                  </div>
                 </div>
               ) : (
                 <div className="d-flex justify-content-center">

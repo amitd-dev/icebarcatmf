@@ -56,6 +56,93 @@
     }
 }
 
+// Sidebar top controls (collapse/expand toggle)
+.sidebar-controls {
+  display: flex;
+  align-items: center;
+  // Put the toggle at the true top-left of the sidebar (cancel the inner padding)
+  justify-content: flex-start;
+  margin: -8px -24px 12px -24px; // -24px cancels Bootstrap px-4 on .sidebar-inner
+  padding-left: 12px;
+
+  @media screen and (max-width: 768px) {
+    display: none; // mobile uses hamburger menu, not collapsed sidebar mode
+  }
+}
+
+.sidebar-controls__toggle {
+  height: 40px;
+  width: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(234, 250, 245, 0.92);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+
+  svg {
+    color: rgba(0, 229, 160, 0.92);
+    font-size: 16px;
+  }
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 229, 160, 0.08);
+    border-color: rgba(0, 229, 160, 0.35);
+    box-shadow: 0 0 0 4px rgba(0, 229, 160, 0.10);
+    transform: translateY(-1px);
+    outline: none;
+  }
+}
+
+// Sidebar brand header (logo + user name + optional collapse toggle)
+.sidebar-brand {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-brand__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sidebar-brand__logo {
+  display: block;
+  width: 120px;
+  height: 50px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(0, 229, 160, 0.18));
+}
+
+// Used by admin sidebar which includes the toggle inside brand top
+.sidebar-brand__toggle {
+  margin-left: 0;
+}
+
+.sidebar-brand__name {
+  margin-top: 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+  color: rgba(234, 250, 245, 0.92);
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar-brand__top {
+    justify-content: center;
+  }
+  .sidebar-brand__name {
+    text-align: center;
+  }
+}
+
 .logout-btn {
     position: fixed;
     left: 15px;

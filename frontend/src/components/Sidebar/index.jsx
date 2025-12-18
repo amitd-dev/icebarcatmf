@@ -33,6 +33,7 @@ const Sidebar = (props) => {
   // }
   const scrollTopRef = useRef(0);
   const scrollBarRef = useRef(null);
+  const scrollEndTimerRef = useRef(null);
 
 
   useEffect(() => {
@@ -41,10 +42,31 @@ const Sidebar = (props) => {
 
     const handleScroll = () => {
       scrollTopRef.current = scrollEl.scrollTop;
+
+      const atTop = scrollEl.scrollTop <= 2;
+      const atBottom =
+        scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 2;
+
+      // Toggle CSS hooks for scroll "effects"
+      scrollEl.classList.toggle('sb-at-top', atTop);
+      scrollEl.classList.toggle('sb-at-bottom', atBottom);
+      scrollEl.classList.toggle('sb-is-scrolled', !atTop);
+
+      // Brief pulse while actively scrolling
+      scrollEl.classList.add('sb-is-scrolling');
+      if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
+      scrollEndTimerRef.current = setTimeout(() => {
+        scrollEl.classList.remove('sb-is-scrolling');
+      }, 140);
     };
 
+    // Initialize once
+    handleScroll();
     scrollEl.addEventListener('scroll', handleScroll);
-    return () => scrollEl.removeEventListener('scroll', handleScroll);
+    return () => {
+      scrollEl.removeEventListener('scroll', handleScroll);
+      if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
+    };
   }, []);
 
 
@@ -194,59 +216,18 @@ const Sidebar = (props) => {
 
   return (
     <CSSTransition style={props.collapseSidebar ? { width: "120px" } : {}} timeout={300} in={show} classNames='sidebar-transition'>
-      <SimpleBar ref={scrollBarRef}  /* scrollableNodeProps={{ ref: scrollBarRef }} */ className={`collapse ${showClass} ${props.open ? 'd-block' : 'd-md-block'} sidebar d-md-block text-white`} style={{ backgroundColor: '#1a1a1a' }}>
+      <SimpleBar
+        ref={scrollBarRef}
+        autoHide={false}
+        className={`collapse ${showClass} ${props.open ? 'd-block' : 'd-md-block'} sidebar d-md-block text-white`}
+      >
         <div className='sidebar-inner px-4 pt-3'>
 
           <Nav className='flex-column pt-3 pt-md-0'>
 
-            {userDetails ? (
-              <div className='d-flex justify-center'>
-                <img src={'/GammaSweep_Logo.png'} style={{ width: "120px", height: "50px", objectFit: "contain" }} alt="SWEEP" />
-                {!props.collapseSidebar
-                  ?
-                  <h5 className='d-flex align-items-center m-2 mt-4' style={{ textTransform: 'upperCase' }}>
-                    {`${userDetails?.firstName} ${userDetails?.lastName}`}
-                  </h5>
-                  : null
-                }
-                <div
-                  className='d-flex justify-center align-items-center mt-3 sidebar-open-btn'
-                  onClick={() => props.setCollapseSidebar(!props.collapseSidebar)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {props.collapseSidebar
-                    ? (
-                      <OverlayTrigger
-                        key="maximize"
-                        placement='right'
-                        overlay={
-                          <Tooltip id={`tooltip-maximize`}>
-                            <strong>Expand Sidebar</strong>
-                          </Tooltip>
-                        }
-                      >
-                        <FontAwesomeIcon icon={faCircleChevronRight} size='lg' />
-                      </OverlayTrigger>
-                    )
-                    : (
-                      <OverlayTrigger
-                        key="minimize"
-                        placement='right'
-                        overlay={
-                          <Tooltip id={`tooltip-minimize`}>
-                            <strong>Shrink Sidebar</strong>
-                          </Tooltip>
-                        }
-                      >
-                        <FontAwesomeIcon icon={faCircleChevronLeft} size='lg' />
-                      </OverlayTrigger>
-                    )
-                  }
-                </div>
-              </div>)
-              : <div className='d-flex justify-content-center'><InlineLoader /></div>
-            }
-            <hr />
+            {userDetails ? null : (
+              <div className='d-flex justify-content-center'><InlineLoader /></div>
+            )}
             {renderNavItems(isUserAffiliate ? affiliateNavLink : navItems)}
             {/* {!props.collapseSidebar
                 ? (
