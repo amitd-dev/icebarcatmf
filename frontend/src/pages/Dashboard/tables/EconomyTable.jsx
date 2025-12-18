@@ -12,7 +12,7 @@ const EconomyTable = ({ accordionOpen, setAccordionOpen, t, economyDataV2,
 
   return (
     <>
-      <Row className="mt-4 align-items-center" onClick={() => setAccordionOpen(!accordionOpen)} style={{ cursor: 'pointer' }}>
+      <Row className="mt-4 align-items-center dashboard-accordion-header" onClick={() => setAccordionOpen(!accordionOpen)} style={{ cursor: 'pointer' }}>
         <Col className='col-12'>
           <div className="d-flex align-items-center" style={{ gap: "10px" }}>
             <h5 className='accordian-heading'>
@@ -25,12 +25,11 @@ const EconomyTable = ({ accordionOpen, setAccordionOpen, t, economyDataV2,
       <Accordion activeKey={accordionOpen ? '0' : ''}>
         <Accordion.Item eventKey="0">
           <Accordion.Body>
-            <div className='table-responsive'>
-
-              <Table bordered striped hover size='sm' className='text-center'>
-                <thead className='thead-dark'>
+            <div className='table-responsive dashboard-table'>
+              <Table size='sm' className='text-center dashboard-data-table'>
+                <thead>
                   <tr>
-                    <th className='text-left' style={{ width: '500px' }}>
+                    <th className='text-left dashboard-data-table__param'>
                       {t('table.parameters')}
                     </th>
                     <th>{t('table.today')}</th>
@@ -50,7 +49,7 @@ const EconomyTable = ({ accordionOpen, setAccordionOpen, t, economyDataV2,
                       return (
                         Object.keys(totalTablesList['coinEcoDataKeys']).includes(data) && (
                           <tr key={i}>
-                            <td className='text-left'>
+                            <td className='text-left dashboard-data-table__param'>
                               {t(totalTablesList['coinEcoDataKeys'][data])}
                             </td>
                             {tableData?.map((ele) => (

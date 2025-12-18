@@ -24,7 +24,7 @@ const PrivateRoute = ({ isWithoutCard = false, children, module }) => {
     permissions[Object.keys(module)?.[0]]?.includes(
       module[Object.keys(module)?.[0]]
     ) ? (
-      <RouteWithSidebar key={children}>
+      <RouteWithSidebar>
         {isWithoutCard ? children : <div className="app-page app-page--surface">{children}</div>}
       </RouteWithSidebar>
     ) : (

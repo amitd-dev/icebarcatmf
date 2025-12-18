@@ -15,7 +15,7 @@ const TransactionTable = ({ accordionOpen, setAccordionOpen, t,
 
     return (
         <>
-            <Row className='mt-4' onClick={() => setAccordionOpen(!accordionOpen)} style={{ cursor: 'pointer' }}>
+            <Row className='mt-4 dashboard-accordion-header' onClick={() => setAccordionOpen(!accordionOpen)} style={{ cursor: 'pointer' }}>
                 <h5 className='accordian-heading'>
                     <span>{t(`headers.transactionDataKeys`)} {t('headers.data')}</span>
                     <span>{accordionOpen ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />} </span>
@@ -24,12 +24,11 @@ const TransactionTable = ({ accordionOpen, setAccordionOpen, t,
             <Accordion activeKey={accordionOpen ? '0' : ''}>
                 <Accordion.Item eventKey="0">
                     <Accordion.Body>
-                        <div className='table-responsive'>
-
-                            <Table bordered striped hover size='sm' className='text-center'>
-                                <thead className='thead-dark'>
+                        <div className='table-responsive dashboard-table'>
+                            <Table size='sm' className='text-center dashboard-data-table'>
+                                <thead>
                                     <tr>
-                                        <th className='text-left' style={{ width: '500px' }}>
+                                        <th className='text-left dashboard-data-table__param'>
                                             {t('table.parameters')}
                                         </th>
                                         <th>{t('table.today')}</th>
@@ -51,7 +50,7 @@ const TransactionTable = ({ accordionOpen, setAccordionOpen, t,
                                                     data
                                                 ) && (
                                                     <tr key={i}>
-                                                        <td className='text-left'>
+                                                        <td className='text-left dashboard-data-table__param'>
                                                             {t(totalTablesList['transactionDataKeys'][data])}
                                                         </td>
                                                         {tableData?.map((ele) => (

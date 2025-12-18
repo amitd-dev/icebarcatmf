@@ -31,6 +31,13 @@
     0 14px 40px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
+
+  // Perf/stability: expanding accordions inside a big backdrop-filter surface can
+  // trigger full-page repaints (“flashing”). Isolate the surface into its own layer.
+  isolation: isolate;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 // Curvy edge / neon stroke ring (doesn't affect layout sizing)

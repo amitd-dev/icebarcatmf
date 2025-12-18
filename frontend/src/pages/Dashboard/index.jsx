@@ -86,7 +86,7 @@ const Dashboard = () => {
           </Form.Select>
         </Col> */}
       </Row>
-      <Card className="p-2 mb-2">
+      <Card className="p-2 mb-2 dashboard-typography">
         <DashboardCharts
           customerData={customerDataV2}
           loginData={reportData}

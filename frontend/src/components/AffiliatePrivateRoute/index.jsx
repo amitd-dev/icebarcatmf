@@ -20,7 +20,7 @@ const AffiliatePrivateRoute = ({ isWithoutCard = false, children, _module }) => 
   }
   return (
     userDetails && !loading ?
-      <AffiliateRouteWithSidebar key={children}>
+      <AffiliateRouteWithSidebar>
         {isWithoutCard
           ? children
           : <div className="app-page"><Card className='p-2'>{children}</Card></div>}

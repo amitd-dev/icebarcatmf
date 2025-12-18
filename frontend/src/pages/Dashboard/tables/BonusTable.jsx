@@ -22,7 +22,7 @@ const BonusTable = ({
   return (
     <>
         <Row
-          className="mt-4 align-items-center"
+          className="mt-4 align-items-center dashboard-accordion-header"
           onClick={() => setAccordionOpen(!accordionOpen)}
           style={{ cursor: "pointer" }}
         >
@@ -47,12 +47,12 @@ const BonusTable = ({
         <Accordion activeKey={accordionOpen ? "0" : ""}>
           <Accordion.Item eventKey="0">
             <Accordion.Body>
-              <div className="table-responsive">
-                <Table bordered striped responsive hover size="sm" className="text-center">
-                  <thead className="thead-dark">
+              <div className="table-responsive dashboard-table">
+                <Table size="sm" className="text-center dashboard-data-table">
+                  <thead>
                     <tr>
                       {bonusReportData && Object.keys(bonusReportData)?.length > 0 && (
-                        <th>Bonus Type</th>
+                        <th className="text-left dashboard-data-table__param">Bonus Type</th>
                       )}
                       {bonusReportData &&
                         Object.keys(bonusReportData?.[Object.keys(bonusReportData)[0]] || {})?.map((reportKey, idx) => (
@@ -70,7 +70,7 @@ const BonusTable = ({
                     ) : bonusReportData && Object.keys(bonusReportData).length > 0 ? (
                       Object.keys(bonusReportData)?.map((bonusTypeKey, idx) => (
                         <tr key={idx}>
-                          <td className="text-capitalize">
+                          <td className="text-left dashboard-data-table__param text-capitalize">
                             {bonusTypeKey.replace(/([a-z])([A-Z])/g, '$1 $2')}
                           </td>
                           {Object.keys(bonusReportData[bonusTypeKey])?.map((reportKey, rIdx) => (
