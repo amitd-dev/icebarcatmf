@@ -72,20 +72,26 @@ const NotificationList = ({
 
   // Infinite Scroll Handler
   useEffect(() => {
+    let rafId = null;
     const handleScroll = () => {
-      if (!scrollContainerRef.current || !hasMore) return;
-
-      const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
-      if (scrollTop + clientHeight >= scrollHeight - 10) {
-        handleLoadMore();
-      }
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        const el = scrollContainerRef.current;
+        if (!el || !hasMore) return;
+        const { scrollTop, scrollHeight, clientHeight } = el;
+        if (scrollTop + clientHeight >= scrollHeight - 10) {
+          handleLoadMore();
+        }
+      });
     };
 
     const container = scrollContainerRef.current;
-    if (container) container.addEventListener("scroll", handleScroll);
+    if (container) container.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
-      if (container) container.removeEventListener("scroll", handleScroll);
+      if (container) container.removeEventListener("scroll", handleScroll, { passive: true });
+      if (rafId) window.cancelAnimationFrame(rafId);
     };
   }, [hasMore, handleLoadMore]);
 

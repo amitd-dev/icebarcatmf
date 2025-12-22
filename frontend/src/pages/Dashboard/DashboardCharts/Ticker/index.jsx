@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button, Form as BForm, Modal } from "@themesberg/react-bootstrap";
 import { formatNumber } from "../../../../utils/dateFormatter";
@@ -92,6 +92,27 @@ export const Ticker = ({ data }) => {
     setLivePlayersCount(data);
   };
 
+  // Perf: socket can fire very frequently; throttle state updates to keep CPU/GPU cool.
+  const lastApplyAtRef = useRef(0);
+  const pendingPayloadRef = useRef(null);
+  const throttleTimerRef = useRef(null);
+  const isVisibleRef = useRef(true);
+  const lowPowerRef = useRef(false);
+  const applyLivePayload = (payload) => {
+    const nextWallet = Math.round((Number(payload?.totalScCoin ?? 0) || 0) * 100) / 100;
+    const nextVault = Math.round((Number(payload?.totalVaultScCoin ?? 0) || 0) * 100) / 100;
+    setWalletSc((prev) => (prev === nextWallet ? prev : nextWallet));
+    setVaultSc((prev) => (prev === nextVault ? prev : nextVault));
+    if (loginCountSocketConnection) {
+      const nextLogin = Number(payload?.liveLoginCount ?? 0) || 0;
+      setLoginCount((prev) => (prev === nextLogin ? prev : nextLogin));
+    }
+    if (livePlayersCountConnection) {
+      const nextLive = Number(payload?.liveGamePlayCount ?? 0) || 0;
+      setLivePlayersCount((prev) => (prev === nextLive ? prev : nextLive));
+    }
+  };
+
   useEffect(() => {
     const stored = safeParseJson(
       getItem(getTickerSlotsStorageKey(userKey)),
@@ -107,16 +128,43 @@ export const Ticker = ({ data }) => {
   useEffect(() => {
     if (!loginCountSocketConnection && !livePlayersCountConnection) return;
 
+    lowPowerRef.current =
+      typeof document !== "undefined" &&
+      document.documentElement.classList.contains("gs-low-power");
+
+    const onVis = () => {
+      isVisibleRef.current = !document.hidden;
+    };
+    document.addEventListener("visibilitychange", onVis);
+
     const handler = (payload) => {
-      setWalletSc(Math.round(payload?.totalScCoin * 100) / 100);
-      setVaultSc(Math.round(payload?.totalVaultScCoin * 100) / 100);
-      if (loginCountSocketConnection) loginCountSocketData(payload?.liveLoginCount);
-      if (livePlayersCountConnection) livePlayersCountSocketData(payload?.liveGamePlayCount);
+      if (!isVisibleRef.current) return;
+      // Throttle to ~2 updates/sec to avoid constant re-rendering.
+      pendingPayloadRef.current = payload;
+      if (throttleTimerRef.current) return;
+      const now = Date.now();
+      const elapsed = now - lastApplyAtRef.current;
+      // In low-power mode, reduce further to ~1 update/sec.
+      const interval = lowPowerRef.current ? 1000 : 500;
+      const delay = Math.max(0, interval - elapsed);
+      throttleTimerRef.current = window.setTimeout(() => {
+        throttleTimerRef.current = null;
+        if (!isVisibleRef.current) return;
+        lastApplyAtRef.current = Date.now();
+        const p = pendingPayloadRef.current;
+        pendingPayloadRef.current = null;
+        applyLivePayload(p);
+      }, delay);
     };
 
     loginCountSocket.on("COMBINED_LIVE_UPDATE", handler);
     return () => {
       loginCountSocket.off("COMBINED_LIVE_UPDATE", handler);
+      document.removeEventListener("visibilitychange", onVis);
+      if (throttleTimerRef.current) {
+        window.clearTimeout(throttleTimerRef.current);
+        throttleTimerRef.current = null;
+      }
     };
   }, [loginCountSocketConnection, livePlayersCountConnection]);
   const formattedVaultData =
@@ -315,19 +363,19 @@ export const Ticker = ({ data }) => {
               >
                 <img src="/copy-svgrepo-com.svg" alt="" />
               </button>
-              <div className="ticker-today-loginC">
-                <div className="ticker-label">
+          <div className="ticker-today-loginC">
+            <div className="ticker-label">
                   <img src={tile.icon} />
                   <label>{tile.label}</label>
-                </div>
-                <div className="ticket-todayC">
+            </div>
+            <div className="ticket-todayC">
                   <p>{tile.formatValue()}</p>
-                </div>
-              </div>
+          </div>
+        </div>
             </div>
           );
         })}
-      </div>
+        </div>
 
       <Modal
         show={replaceModal.isOpen}

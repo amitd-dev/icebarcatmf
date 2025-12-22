@@ -44,7 +44,9 @@
   // -----------------------------
   .simplebar-content-wrapper {
     position: relative;
-    scroll-behavior: smooth;
+    // Smooth scrolling makes trackpad/mousewheel feel "laggy" and can hurt perf.
+    // Keep it native and only use smooth behavior for explicit programmatic scrolls if needed.
+    scroll-behavior: auto;
 
     // Top/bottom fade to hint scrollability (always subtle)
     &::before,

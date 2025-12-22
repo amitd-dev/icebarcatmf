@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Row, Table, Button, Spinner } from "@themesberg/react-bootstrap";
 import { totalTablesList, tableData } from "../constants";
 import { InlineLoader } from "../../../components/Preloader";
 import { formatPriceWithCommas } from "../../../utils/helper";
+import DataVizPanel from "../components/DataVizPanel";
 
 const LoginDataTable = ({
   reportLoading,
@@ -14,6 +15,38 @@ const LoginDataTable = ({
   isReportTillRefetching,
 }) => {
   const isTillBusy = reportTillLoading || isReportTillRefetching;
+  const [view, setView] = useState("chart"); // "table" | "chart"
+  const metricOptions = useMemo(() => {
+    const map = totalTablesList["loginData"] || {};
+    return Object.keys(map).map((key) => ({
+      value: key,
+      label: t(map[key]),
+    }));
+  }, [t]);
+  const [metricId, setMetricId] = useState(metricOptions?.[0]?.value || "");
+  useEffect(() => {
+    if (!metricId && metricOptions?.[0]?.value) setMetricId(metricOptions[0].value);
+  }, [metricId, metricOptions]);
+
+  const vizLabels = useMemo(() => {
+    return tableData.map((k) => {
+      if (k === "MONTH_TO_DATE") return "Month to date";
+      if (k === "LAST_MONTH") return "Last month";
+      if (k === "TILL_DATE") return "Till date";
+      if (k === "CUSTOM") return "Selected date";
+      if (k === "YESTERDAY") return "Yesterday";
+      if (k === "TODAY") return "Today";
+      return k;
+    });
+  }, []);
+
+  const vizValues = useMemo(() => {
+    if (!metricId) return [];
+    return tableData.map((k) => {
+      if (k === "TILL_DATE") return Number(reportTillData?.[metricId] ?? 0);
+      return Number(reportData?.[metricId]?.[k] ?? 0);
+    });
+  }, [metricId, reportData, reportTillData]);
 
 
 
@@ -24,12 +57,48 @@ const LoginDataTable = ({
   return (
     <>
         <Row className="mt-4 dashboard-section-heading">
-          <h5>
-            {t(`headers.loginData`)} {t("headers.data")}
-          </h5>
+          <div className="dashboard-section-heading__row">
+            <h5 className="mb-0">
+              {t(`headers.loginData`)} {t("headers.data")}
+            </h5>
+            <div className="dashboard-view-tabs">
+              <button
+                type="button"
+                className={`dashboard-view-tab ${view === "table" ? "is-active" : ""}`}
+                onClick={() => setView("table")}
+              >
+                Table
+              </button>
+              <button
+                type="button"
+                className={`dashboard-view-tab ${view === "chart" ? "is-active" : ""}`}
+                onClick={() => {
+                  setMetricId((prev) => prev || metricOptions?.[0]?.value || "");
+                  setView("chart");
+                }}
+                disabled={reportLoading || !reportData || !Object.keys(reportData)?.length}
+              >
+                Chart
+              </button>
+            </div>
+          </div>
         </Row>
         <hr className="dashboard-section-divider" />
 
+        {view === "chart" && (
+          <DataVizPanel
+            title="Login Data"
+            metricOptions={metricOptions}
+            selectedMetricId={metricId}
+            onChangeMetricId={setMetricId}
+            labels={vizLabels}
+            values={vizValues}
+            isLoading={reportLoading}
+            demoSeed="login"
+          />
+        )}
+
+        {view === "table" && (
         <div className="table-responsive dashboard-table">
           <Table size="sm" className="text-center dashboard-data-table">
             <thead>
@@ -111,6 +180,7 @@ const LoginDataTable = ({
 
           </Table>
         </div>
+        )}
     </>
   );
 };

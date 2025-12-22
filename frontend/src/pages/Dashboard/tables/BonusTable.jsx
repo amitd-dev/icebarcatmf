@@ -47,49 +47,51 @@ const BonusTable = ({
         <Accordion activeKey={accordionOpen ? "0" : ""}>
           <Accordion.Item eventKey="0">
             <Accordion.Body>
-              <div className="table-responsive dashboard-table">
-                <Table size="sm" className="text-center dashboard-data-table">
-                  <thead>
-                    <tr>
-                      {bonusReportData && Object.keys(bonusReportData)?.length > 0 && (
-                        <th className="text-left dashboard-data-table__param">Bonus Type</th>
-                      )}
-                      {bonusReportData &&
-                        Object.keys(bonusReportData?.[Object.keys(bonusReportData)[0]] || {})?.map((reportKey, idx) => (
-                          <th key={idx}>{reportKey.replace(/_/g, ' ')}</th>
-                        ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ? (
+              {accordionOpen && (
+                <div className="table-responsive dashboard-table">
+                  <Table size="sm" className="text-center dashboard-data-table">
+                    <thead>
                       <tr>
-                        <td colSpan={10} className="text-center">
-                          <InlineLoader />
-                        </td>
-                      </tr>
-                    ) : bonusReportData && Object.keys(bonusReportData).length > 0 ? (
-                      Object.keys(bonusReportData)?.map((bonusTypeKey, idx) => (
-                        <tr key={idx}>
-                          <td className="text-left dashboard-data-table__param text-capitalize">
-                            {bonusTypeKey.replace(/([a-z])([A-Z])/g, '$1 $2')}
-                          </td>
-                          {Object.keys(bonusReportData[bonusTypeKey])?.map((reportKey, rIdx) => (
-                            <td key={rIdx}>
-                              {formatPriceWithCommas(bonusReportData[bonusTypeKey][reportKey]?.scBonus ?? "-")}
-                            </td>
+                        {bonusReportData && Object.keys(bonusReportData)?.length > 0 && (
+                          <th className="text-left dashboard-data-table__param">Bonus Type</th>
+                        )}
+                        {bonusReportData &&
+                          Object.keys(bonusReportData?.[Object.keys(bonusReportData)[0]] || {})?.map((reportKey, idx) => (
+                            <th key={idx}>{reportKey.replace(/_/g, ' ')}</th>
                           ))}
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={10} className="text-danger text-center">
-                          No data Found
-                        </td>
                       </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {loading ? (
+                        <tr>
+                          <td colSpan={10} className="text-center">
+                            <InlineLoader />
+                          </td>
+                        </tr>
+                      ) : bonusReportData && Object.keys(bonusReportData).length > 0 ? (
+                        Object.keys(bonusReportData)?.map((bonusTypeKey, idx) => (
+                          <tr key={idx}>
+                            <td className="text-left dashboard-data-table__param text-capitalize">
+                              {bonusTypeKey.replace(/([a-z])([A-Z])/g, '$1 $2')}
+                            </td>
+                            {Object.keys(bonusReportData[bonusTypeKey])?.map((reportKey, rIdx) => (
+                              <td key={rIdx}>
+                                {formatPriceWithCommas(bonusReportData[bonusTypeKey][reportKey]?.scBonus ?? "-")}
+                              </td>
+                            ))}
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={10} className="text-danger text-center">
+                            No data Found
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </Table>
+                </div>
+              )}
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>

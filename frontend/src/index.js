@@ -26,6 +26,30 @@ import queryClient from './reactQuery/queryClientSetup'
 import './config/i18n';
 import MainRoute from './pages/MainRoute'
 setupInterceptors()
+
+// Perf: automatically enable a "low power" mode on weaker devices to reduce GPU-heavy
+// effects (mainly backdrop-filter blurs). Users can override via localStorage:
+// - localStorage.setItem('gs:lowPower', '1') to force ON
+// - localStorage.setItem('gs:lowPower', '0') to force OFF
+try {
+  const forced = window.localStorage?.getItem('gs:lowPower')
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+  const reduceData = window.matchMedia?.('(prefers-reduced-data: reduce)')?.matches
+  const cores = navigator.hardwareConcurrency || 8
+  const mem = navigator.deviceMemory || 8
+  const autoLowPower = !!reduceMotion || !!reduceData || cores <= 4 || mem <= 4
+  const enabled =
+    forced === '1' ? true : forced === '0' ? false : autoLowPower
+  if (enabled) document.documentElement.classList.add('gs-low-power')
+  // Optional debug hook (safe no-op in prod unless used)
+  window.__GS_SET_LOW_POWER__ = (on) => {
+    const v = on ? '1' : '0'
+    window.localStorage?.setItem('gs:lowPower', v)
+    document.documentElement.classList.toggle('gs-low-power', !!on)
+  }
+} catch {
+  // ignore
+}
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 // In local development we want routes to work at `/...` regardless of PUBLIC_URL/homepage.

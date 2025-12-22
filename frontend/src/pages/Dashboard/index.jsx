@@ -132,7 +132,6 @@ const Dashboard = () => {
           reportTillRefetch={reportTillRefetch}
           isReportTillRefetching={isReportTillRefetching}
         />
-        <hr></hr>
         <CustomerTable
           tableKey="customerDataKeys"
           customerDataV2={customerDataV2}
@@ -141,7 +140,6 @@ const Dashboard = () => {
           customerRefetchV2={customerRefetchV2}
           t={t}
         />
-        <hr></hr>
         <EconomyTable
           tableKey="loginData"
           accordionOpen={economicDataAccordionOpen}

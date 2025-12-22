@@ -1,7 +1,9 @@
-import { Col, Row, Table } from "@themesberg/react-bootstrap";
+import React, { useEffect, useMemo, useState } from "react";
+import { Col, Row, Table, Button } from "@themesberg/react-bootstrap";
 import { totalTablesList, tableData } from "../constants";
 import { InlineLoader } from "../../../components/Preloader";
 import { formatPriceWithCommas } from "../../../utils/helper";
+import DataVizPanel from "../components/DataVizPanel";
 
 const CustomerTable = ({
 
@@ -12,22 +14,88 @@ const CustomerTable = ({
           // customerRefetchV2
           // customerRefetchV2
 }) => {
+  const [view, setView] = useState("chart"); // "table" | "chart"
+
+  const customerKey = playerType !== "internal" ? "customerDataKeysV2" : "customerDataKeysInternal";
+  const metricOptions = useMemo(() => {
+    const map = totalTablesList[customerKey] || {};
+    return Object.keys(map).map((key) => ({
+      value: key,
+      label: t(map[key]),
+    }));
+  }, [customerKey, t]);
+  const [metricId, setMetricId] = useState(metricOptions?.[0]?.value || "");
+  useEffect(() => {
+    if (!metricId && metricOptions?.[0]?.value) setMetricId(metricOptions[0].value);
+  }, [metricId, metricOptions]);
+
+  const vizLabels = useMemo(() => {
+    return tableData.map((k) => {
+      if (k === "MONTH_TO_DATE") return "Month to date";
+      if (k === "LAST_MONTH") return "Last month";
+      if (k === "TILL_DATE") return "Till date";
+      if (k === "CUSTOM") return "Selected date";
+      if (k === "YESTERDAY") return "Yesterday";
+      if (k === "TODAY") return "Today";
+      return k;
+    });
+  }, []);
+
+  const vizValues = useMemo(() => {
+    if (!metricId) return [];
+    return tableData.map((k) => Number(customerDataV2?.[metricId]?.[k] ?? 0));
+  }, [customerDataV2, metricId]);
 
   return (
     <>
-        <Row className="mt-4 align-items-center dashboard-section-heading">
-          <Col>
-            <div className="d-flex align-items-center" style={{ gap: "10px" }}>
-              <h5 className="mb-0">
-                {t(`headers.customerDataKeys`)} {t("headers.data")}
-              </h5>
-            
-            </div>
-          </Col>
-        </Row>
+      <Row className="mt-4 dashboard-section-heading">
+        <div className="dashboard-section-heading__row">
+          <h5 className="mb-0">
+            {t(`headers.customerDataKeys`)} {t("headers.data")}
+          </h5>
+          <div className="dashboard-view-tabs">
+            <button
+              type="button"
+              className={`dashboard-view-tab ${view === "table" ? "is-active" : ""}`}
+              onClick={() => setView("table")}
+            >
+              Table
+            </button>
+            <button
+              type="button"
+              className={`dashboard-view-tab ${view === "chart" ? "is-active" : ""}`}
+              onClick={() => {
+                setMetricId((prev) => prev || metricOptions?.[0]?.value || "");
+                setView("chart");
+              }}
+              disabled={
+                customerLoadingV2 ||
+                !customerDataV2 ||
+                !Object.keys(customerDataV2)?.length
+              }
+            >
+              Chart
+            </button>
+          </div>
+        </div>
+      </Row>
 
         <hr className="dashboard-section-divider" />
 
+        {view === "chart" && (
+          <DataVizPanel
+            title="Customers Data"
+            metricOptions={metricOptions}
+            selectedMetricId={metricId}
+            onChangeMetricId={setMetricId}
+            labels={vizLabels}
+            values={vizValues}
+            isLoading={customerLoadingV2}
+            demoSeed="customers"
+          />
+        )}
+
+        {view === "table" && (
         <div className="table-responsive dashboard-table">
           <Table size="sm" className="text-center dashboard-data-table">
             <thead>
@@ -122,6 +190,7 @@ const CustomerTable = ({
             )}
           </Table>
         </div>
+        )}
     </>
   );
 };

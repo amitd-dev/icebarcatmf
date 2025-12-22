@@ -40,31 +40,49 @@ const Sidebar = (props) => {
     const scrollEl = scrollBarRef.current?.getScrollElement?.();
     if (!scrollEl) return;
 
-    const handleScroll = () => {
+    let rafId = null;
+    let lastAtTop = null;
+    let lastAtBottom = null;
+
+    const apply = () => {
+      rafId = null;
       scrollTopRef.current = scrollEl.scrollTop;
 
       const atTop = scrollEl.scrollTop <= 2;
       const atBottom =
         scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 2;
 
-      // Toggle CSS hooks for scroll "effects"
-      scrollEl.classList.toggle('sb-at-top', atTop);
-      scrollEl.classList.toggle('sb-at-bottom', atBottom);
-      scrollEl.classList.toggle('sb-is-scrolled', !atTop);
+      if (lastAtTop !== atTop) {
+        scrollEl.classList.toggle('sb-at-top', atTop);
+        scrollEl.classList.toggle('sb-is-scrolled', !atTop);
+        lastAtTop = atTop;
+      }
+      if (lastAtBottom !== atBottom) {
+        scrollEl.classList.toggle('sb-at-bottom', atBottom);
+        lastAtBottom = atBottom;
+      }
 
-      // Brief pulse while actively scrolling
-      scrollEl.classList.add('sb-is-scrolling');
+      // Brief pulse while actively scrolling (avoid re-adding unnecessarily)
+      if (!scrollEl.classList.contains('sb-is-scrolling')) {
+        scrollEl.classList.add('sb-is-scrolling');
+      }
       if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
       scrollEndTimerRef.current = setTimeout(() => {
         scrollEl.classList.remove('sb-is-scrolling');
       }, 140);
     };
 
+    const handleScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(apply);
+    };
+
     // Initialize once
-    handleScroll();
-    scrollEl.addEventListener('scroll', handleScroll);
+    apply();
+    scrollEl.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
-      scrollEl.removeEventListener('scroll', handleScroll);
+      scrollEl.removeEventListener('scroll', handleScroll, { passive: true });
+      if (rafId) window.cancelAnimationFrame(rafId);
       if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
     };
   }, []);
