@@ -62,6 +62,12 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   position: relative !important;
   overflow: hidden !important;
+  // Fix font/icon vertical alignment across the app
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  line-height: 1.1 !important;
   
   &::before {
     content: '';
@@ -162,6 +168,7 @@
   padding: 0.875rem 1rem !important;
   color: #ffffff !important;
   font-size: 0.95rem !important;
+  line-height: 1.2 !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   
   &:focus {
@@ -245,8 +252,9 @@ label {
 // ============================================
 // MODERN TABLE DESIGN
 // ============================================
-
-.table {
+// Note: Dashboard tables have a dedicated skin via `.dashboard-data-table`.
+// Avoid fighting those styles by excluding them here.
+.table:not(.dashboard-data-table) {
   color: #e5e5e5 !important;
   border-collapse: separate !important;
   border-spacing: 0 8px !important;
@@ -299,6 +307,13 @@ label {
         border-radius: 0 12px 12px 0 !important;
       }
     }
+    vertical-align: middle !important;
+    line-height: 1.2 !important;
+  }
+
+  tbody td {
+    vertical-align: middle !important;
+    line-height: 1.25 !important;
   }
 }
 
