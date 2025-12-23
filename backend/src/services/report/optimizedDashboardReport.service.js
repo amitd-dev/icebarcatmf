@@ -580,15 +580,29 @@ export class DashboardReportService extends ServiceBase {
     } = this.context
 
     const { client } = redisClient
+    const redisReady = Boolean(client && client.status === 'ready')
 
-    const internalUsers = await client.get('internalUsers')
-
-    if (internalUsers) return JSON.parse(internalUsers)
+    // Redis is optional in local/dev. If it's down, ioredis will queue commands forever by default,
+    // which can cause the whole dashboard request to "spin" indefinitely. Fail fast + fall back to DB.
+    if (redisReady) {
+      try {
+        const internalUsers = await client.get('internalUsers')
+        if (internalUsers) return JSON.parse(internalUsers)
+      } catch (_) {
+        // ignore redis errors and fall back to DB
+      }
+    }
 
     const internalUsersArray = (await UserModel.findAll({ where: { isInternalUser: true }, attributes: ['userId'] })).map(obj => { return obj.userId })
 
     if (internalUsersArray.length === 0) internalUsersArray.push('-1') // For Fail Safety
-    await client.set('internalUsers', JSON.stringify(internalUsersArray))
+    if (redisReady) {
+      try {
+        await client.set('internalUsers', JSON.stringify(internalUsersArray))
+      } catch (_) {
+        // ignore redis errors
+      }
+    }
 
     return internalUsersArray
   }
@@ -751,6 +765,7 @@ export class DashboardReportService extends ServiceBase {
 
   async getLoggedInAndActivePlayerCount () {
     const { client } = redisClient
+    if (!client || client.status !== 'ready') return { loggedInUsers: 0, activePlayers: 0 }
 
     // Internal Function
     const scanCount = async (pattern) => {
@@ -758,15 +773,25 @@ export class DashboardReportService extends ServiceBase {
       let total = 0
 
       do {
-        const [nextCursor, keys] = await client.scan(cursor, 'MATCH', pattern, 'COUNT', 5000)
-        cursor = nextCursor
-        total += keys.length
+        try {
+          const [nextCursor, keys] = await client.scan(cursor, 'MATCH', pattern, 'COUNT', 5000)
+          cursor = nextCursor
+          total += keys.length
+        } catch (_) {
+          return total
+        }
       } while (cursor !== '0')
 
       return total
     }
 
-    const [loggedInUsers, activePlayers] = await Promise.all([scanCount('user:*'), scanCount('gamePlay:*')])
+    let loggedInUsers = 0
+    let activePlayers = 0
+    try {
+      [loggedInUsers, activePlayers] = await Promise.all([scanCount('user:*'), scanCount('gamePlay:*')])
+    } catch (_) {
+      // ignore redis errors
+    }
 
     return { loggedInUsers, activePlayers }
   }
